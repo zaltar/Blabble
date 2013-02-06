@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Blabble</title>
+	<link rel="stylesheet" type="text/css" href="./css/site.css" />
+	<link rel="stylesheet" type="text/css" href="./css/prettify.css" />
+	<link rel="shortcut icon" href="./favicon.ico" />
+	<script type="text/javascript" src="./js/google-code-prettify/prettify.js"></script>
+	<style>
+		h3 {
+			margin: 25px 0 10px 0;
+		}
+	</style>
+</head>
+<body onload="prettyPrint()">
+	<a href="http://github.com/zaltar/Blabble"><img style="position: absolute; top: 0; right: 0; border: 0;z-index:2000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<img src="icon_128.png" style="height: 32px;float:left;margin-right:5px;margin-top:3px;">
+				<a href="#" class="brand">Blabble</a>
+				<ul class="nav">
+				  <li>
+					<a href="./index.html">Home</a>
+				  </li>
+				  <li><a href="./docs.html">Documentation</a></li>
+				  <li class="active"><a href="./jsDocs.html">JavaScript API</a></li>
+				  <li><a href="./example.html">Example</a></li>
+				  <li><a href="./downloads.html">Downloads</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container" style="padding-left: 10px;">
+		<div class="row">
+			<div class="span2">
+				<div class="well sidebar" style="padding: 4px 0">
+					<ul class="nav nav-list">
+					  <li class="nav-header">
+						<a href="docs.html">Documentation</a>
+					  </li>
+					  <li>
+						<a href="docs.html#compiling">Compiling</a>
+					  </li>
+					  <li>
+						<a href="docs.html#distributing">Distributing</a>
+					  </li>
+					  <li class="nav-header active">
+						<a href="jsDocs.html">Javascript API</a>
+					  </li>
+					  <li>
+						<a href="#embedding">Embedding</a>
+					  </li>
+					  <li>
+						<a href="#plugin">Plugin Object</a>
+					  </li>
+					  <li>
+						<a href="#accounts">Accounts</a>
+					  </li>
+					  <li>
+						<a href="#calls">Calls</a>
+					  </li>
+					</ul>
+				</div>
+			</div>
+			<div class="offset2 span10">
+				<div class="row">
+					<div class="span10">
+						<h1>Javascript API</h1>
+						<p>
+							The javascript API was developed to be very simple and easy to use.  The primary entry point is the Blabble plugin object.
+							This object will be passed to a function of your choice once the plugin is loaded.
+						</p>
+						<a name="embedding" class="anchor">&nbsp;</a>
+						<h2>Embedding</h2>
+						<p>
+							When using the NPAPI version of the plugin, it can be embedded using the following html:
+						</p>
+<pre class="prettyprint">
+	&lt;embed id=&quot;softphonePlugin&quot; type=&quot;application/x-blabble&quot; onload=&quot;phoneOnLoad&quot; 
+	    logging=&quot;true&quot; enableice=&quot;true&quot; stunserver=&quot;someStunServer&quot;&gt;
+</pre>
+						<h3>Plugin parameters</h3>
+						<dl class="doc">
+							<dt>onload <span class="type">function</span></dt>
+							<dd>Javascript function to call once the plugin is loaded. The function will be passed
+								the plugin Javascript object.
+<pre class="prettyprint">
+function softphoneLoaded(softphone) {
+	if (!softphone.valid) {
+		alert("Plugin error: " + softphone.error);
+		return;
+	}
+	//...Save softphone plugin somewhere for future use
+}
+</pre>
+								
+							</dd>
+							<dt>logging <span class="type">bool</span></dt>
+							<dd>Enable or disable Pjsip logging.  The log file will be stored in your local user folder.</dd>
+							<dt>enableIce <span class="type">bool</span></dt>
+							<dd>Enable ICE. See <a href="http://en.wikipedia.org/wiki/Interactive_Connectivity_Establishment">Interactive Connectivity Establishment</a> or 
+							<a href="http://www.pjsip.org/pjnath/docs/html/group__PJNATH__ICE.htm">PJNATH ICE</a>.
+							</dd>
+							<dt>stunServer <span class="type">URL</span></dt>
+							<dd>Optional STUN server to use.  This can be a domain name or IP address and port (3478 will be used if no port is given).</dd>
+						</dl>
+						<a name="plugin" class="anchor">&nbsp;</a>
+						<h3>Plugin object</h3>
+						<div class="docSection">Functions</div>
+						<dl class="doc">
+							<dt>createAccount ( options ) <div class="returns">Account object</div></dt>
+							<dd>
+								Sets up a SIP account and connects to a server.  <code>options</code> is a 
+								Javascript map of values and callback functions for the account.
+								<p class="options">Options:</p>
+								<dl class="subdoc">
+									<dt>host <span class="type">string</span></dt>
+									<dd>The DNS name or IP address of the server to authenticate against.</dd>
+									<dt>username <span class="type">string</span></dt>
+									<dd>The username to use</dd>
+									<dt>password <span class="type">string</span></dt>
+									<dd>The password to use to authenticate</dd>
+									<dt>useTls <span class="type">bool</span></dt>
+									<dd>If set to true, will attempt to connect to the host using TLS.</dd>
+									<dt>identity <span class="type">string</span></dt>
+									<dd>The default identity to use as a <code>P-Asserted-Identity</code> sip header. This parameter
+										is optional and can be overridden on a per-call basis.
+									</dd>
+									<dt>onIncomingCall <span class="type">function ( call, account )</span></dt>
+									<dd>Function to call when a call is being presented. The function is passed the
+										new call object and the account object.
+									</dd>
+									<dt>onRegState <span class="type">function ( account, status )</span></dt>
+									<dd>Function to call when an account registration event occurs. The function
+										is passed account object and an int representing the latest registration
+										status. See <a href="http://www.pjsip.org/docs/latest/pjsip/docs/html/group__PJSIP__MSG__LINE.htm#gaf6d60351ee68ca0c87358db2e59b9376">pjsip_status_code</a>
+										for possible status values.
+									</dd>
+								</dl>
+							</dd>
+						</dl>
+						<div class="docSection">Functions</div>
+						<dl class="doc">
+							<dt>GetAudioDevices ( ) <div class="returns">array of objects</div></dt>
+							<dd>Returns an array of audio devices currently available on the system.  Each array item will have the
+								properties <code>name</code> the name of the device, <code>driver</code> the driver used, 
+								<code>inputs</code> the number of inputs on this device, <code>outputs</code> the number of 
+								outputs on this device, <code>id</code> the device ID as used by PJSIP and <code>SetAudioDevice</code>.
+							</dd>
+							<dt>GetCurrentAudioDevice ( ) <div class="returns">object</div></dt>
+							<dd>Returns a JavaScript object with <code>capture</code> and <code>playback</code> properties.  Each
+								property contains a description of the active device that follows the same format as the devices
+								returned by <code>GetAudioDevices()</code>.
+							</dd>
+							<dt>SetAudioDevice ( captureDeviceId, playbackDeviceId ) <div class="returns">bool</div></dt>
+							<dd>Set the current capture and playback devices.  The device IDs are the same as those returned by
+								<code>GetAudioDevices()</code>.  <code>true</code> is returned if the new audio devices
+								were able to be set, <code>false</code> otherwise.
+							</dd>
+							<dt>GetVolume ( ) <div class="returns">object</div></dt>
+							<dd>Returns a JavaScript object with two properties: <code>outgoingVolume</code> and <code>incomingVolume</code>.
+								The volume is a float with the range from 0 to 2 with 1 being no adjustment and 0 being muted.
+							</dd>
+							<dt>SetVolume ( outgoingVolume, incomingVolume ) </dt>
+							<dd>Allows the ability to set the outgoing, incoming or both volume adjustments. The parameter can be null (no change), or
+								a float from 0 to 2 with 1 meaning default or no adjustment and 0 meaning muted.
+							</dd>
+							<dt>GetSignalLevel ( ) <div class="returns">object</div></dt>
+							<dd>Returns a JavaScript object with properties <code>outgoingLevel</code> and <code>incomingLevel</code> that 
+								represent the current signal level. The value is an int from 0 to 255 with 0 being no signal.
+							</dd>
+						</dl>
+						<div class="docSection">Properties</div>
+						<dl class="doc">
+							<dt>tlsEnabled <div class="returns">bool</div></dt>
+							<dd>Returns true if tls was compiled in and available for use.</dd>
+						</dl>
+						<a name="accounts" class="anchor">&nbsp;</a>
+						<h3>Account object</h3>
+						<div class="docSection">Functions</div>
+						<dl class="doc">
+							<dt>makeCall ( params ) <div class="returns">Call object</div></dt>
+							<dd>
+								Starts a new call. <code>options</code> is used to setup callbacks and parameters. If the call
+								fails immediately, an error object is returned with properties <code>valid</code> set to <code>false</code>
+								and <code>error</code> set to a string representation of the error that occurred.
+								<p class="options">Options:</p>
+								<dl class="subdoc">
+									<dt>destination <span class="required">(required)</span> <span class="type">string</span></dt>
+									<dd>The call endpoint.  Can be a proper SIP URL ("sip:blah@server") or simply an extension on the 
+										current registered server ("1234") which is simply transformed to ("sip:1234@registrationServer")
+									</dd>
+									<dt>identity <span class="type">string</span></dt>
+									<dd>This along with <code>displayName</code> are combined to create a <code>P-Asserted-Identiy</code> SIP header for this call. 
+										<code>identity</code> is the URI component.
+									</dd>
+									<dt>displayName <span class="type">string</span></dt>
+									<dd>This is used along with <code>identity</code> to build the <code>P-Asserted_Identity</code> header. This part
+										is optional and is used as the display-name. Eg: <code>P-Asserted-Identity: "Display Name" &lt;sip:someone@somewhere.com&gt;</code>
+									</dd>
+									<dt>onCallRinging <span class="type">function ( call )</span></dt>
+									<dd>This function is called when the call starts ringing. The function is passed the call object. This occurs after the INVITE is sent.</dd>
+									<dt>onCallConnected <span class="type">function ( call )</span></dt>
+									<dd>This function is called after the ACK is sent for a 2XX result. The function is passed the call object. Media is not guaranteed to be established yet.</dd>
+									<dt>onCallEnd <span class="type">function ( call, errorCode )</span></dt>
+									<dd>This function is called when the call is terminated. The function is passed the call object and an error code if the call was terminiated due to an error.</dd>
+								</dl>
+							</dd>
+							<dt>unreigster ( ) </dt>
+							<dd>
+								Unregisters the account from the server.  The account object and all calls are still valid. The account can be registered again later using the <code>register</code> method.
+							</dd>
+							<dt>register ( ) </dt>
+							<dd>
+								Reregister the account with the server.
+							</dd>
+							<dt>destroy ( ) </dt>
+							<dd>
+								Ends all calls, unregisters the account, and frees all associated memory.  This account object is no longer valid and cannot be used for anything further.
+							</dd>
+						</dl>
+						<div class="docSection">Properties</div>
+						<dl class="doc">
+							<dt>activeCall <div class="returns">call object</div></dt>
+							<dd>Returns the active call if there is one otherwise null.
+							</dd>
+							<dt>calls <div class="returns">array of call objects</div></dt>
+							<dd>Returns an array of all calls currently linked to this account.
+							</dd>
+							<dt>isRegistered <div class="returns">bool</div></dt>
+							<dd>
+								Returns true if the account is currently registered.
+							</dd>
+							<dt>host <div class="returns">string</div></dt>
+							<dd>Returns the current host this account is setup for.</dd>
+							<dt>username <div class="returns">string</div></dt>
+							<dd>Returns the current username set for this account</dd>
+							<dt>onIncomingCall <span class="type">function ( call, account )</span></dt>
+							<dd>A write only property used to set the function that gets called when a new call arrives on this account.  This function is passed the new call object and this account object.</dd>
+							<dt>onRegState <span class="type">function ( account, status )</span></dt>
+							<dd>A write only property used to set the function that gets called when the registration status changes.  This is called when the account is unregistered, registers, or reregisters. The function is passed the account object and the new account status.</dd>
+						</dl>	
+						
+						<a name="calls" class="anchor">&nbsp;</a>
+						<h3>Call object</h3>
+						<div class="docSection">Functions</div>
+						<dl class="doc">
+							<dt>answer ( ) <div class="returns">bool</div></dt>
+							<dd>Used to answer an incoming call. Returns true if successful.</dd>
+							<dt>hangup ( ) </dt>
+							<dd>Ends the call. The call object will now become invaid.</dd>
+							<dt>hold ( ) <div class="returns">bool</div></dt>
+							<dd>Puts the call on hold (disconnects audio). Returns true if successful</dd>
+							<dt>unhold ( ) <div class="returns">bool</div></dt>
+							<dd>Removes the call from hold and reconnects audio. Returns true if successful</dd>
+							<dt>sendDTMF ( digit ) <div class="returns">bool</div></dt>
+							<dd>Used to send a single DTMF tone. <code>digit</code> must be a single character, 0-9, * or #. Returns true on success.</dd>
+							<dt>transfer ( options ) <div class="returns">bool</div></dt>
+							<dd>
+								Used to blind transfer a call.
+
+								<p class="options">Options:</p>
+								<dl class="subdoc">
+									<dt>destination <span class="required">(required)</span> <span class="type">string</span></dt>
+									<dd>The destination to transfer the call to.  Can be a proper SIP URL ("sip:blah@server") or simply an extension on the current registered server ("1234")</dd>	
+									<dt>onStatusChange <span class="type">function ( call, status )</span></dt>
+									<dd>This function is called when status about the transfer is known. It is passed the call object and status.</dd>
+								</dl>
+							</dd>
+							<dt>transferReplace ( call ) <div class="returns">bool</div></dt>
+							<dd>Attempts a transfer of the this call to the passed in call removing both calls from this account.</dd>
+						</dl>
+						<div class="docSection">Properties</div>
+						<dl class="doc">
+							<dt>valid <div class="returns">bool</div></dt>
+							<dd>Return true if this call object is valid. If invalid, none of the other functions/properties will work.</dd>
+							<dt>callerId <div class="returns">string</div></dt>
+							<dd>Return the number/extension portion of the caller id of this call.</dd>
+							<dt>isActive <div class="returns">bool</div></dt>
+							<dd>Returns true if the call is currently active (audio bridged).</dd>
+							<dt>status <div class="returns">object</div></dt>
+							<dd>Returns a javascript object with the current call information. 
+								<div>
+									<code>state</code> will have the current call state:
+									<ul class="">
+										<li>CALL_INVALID = -1</li>
+										<li>CALL_ACTIVE = 0</li>
+										<li>CALL_HOLD = 1</li>
+										<li>CALL_RINGING_OUT = 2</li>
+										<li>CALL_RINGING_IN = 3</li>
+										<li>CALL_BUSY = 4</li>
+										<li>CALL_ERROR_CANNOTCOMPLETE = 5</li>
+										<li>CALL_ERROR_DISCONNECTED = 6</li>
+									</ul>
+								</div>
+								<div>
+									<code>duration</code> contains the call length in seconds.
+								</div>
+								<div>
+									<code>callerId</code> contains the number/extension portion of the caller ID.
+								</div>
+							</dd>
+							<dt>onCallConnected <span class="type">function ( call )</span></dt>
+							<dd>A write only property used to set the function to get called when this call is connected.</dd>
+							<dt>onCallEnd <span class="type">function ( call, errorCode )</span></dt>
+							<dd>A write only property used to set the function to get called when this call ends.</dd>
+						</dl>
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

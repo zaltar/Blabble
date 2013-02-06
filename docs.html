@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Blabble</title>
+	<link rel="stylesheet" type="text/css" href="./css/site.css" />
+	<link rel="shortcut icon" href="./favicon.ico" />
+</head>
+<body>
+	<a href="http://github.com/zaltar/Blabble"><img style="position: absolute; top: 0; right: 0; border: 0;z-index:2000" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
+	<div class="navbar navbar-fixed-top navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<img src="icon_128.png" style="height: 32px;float:left;margin-right:5px;margin-top:3px;">
+				<a href="#" class="brand">Blabble</a>
+				<ul class="nav">
+				  <li><a href="./index.html">Home</a></li>
+				  <li class="active"><a href="./docs.html">Documentation</a></li>
+				  <li><a href="./jsDocs.html">JavaScript API</a></li>
+				  <li><a href="./example.html">Example</a></li>
+				  <li><a href="./downloads.html">Downloads</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container" style="padding-left: 10px;">
+		<div class="row">
+			<div class="span2">
+				<div class="well sidebar" style="padding: 4px 0">
+					<ul class="nav nav-list">
+					  <li class="nav-header active dropdown">
+						<a href="#">Documentation</a>
+					  </li>
+					  <li>
+						<a href="#compiling">Compiling</a>
+					  </li>
+					  <li>
+						<a href="#distributing">Distributing</a>
+					  </li>
+					  <li class="nav-header">
+						<a href="jsDocs.html">Javascript API</a>
+					  </li>
+					  <li>
+						<a href="jsDocs.html#embedding">Embedding</a>
+					  </li>
+					  <li>
+						<a href="jsDocs.html#plugin">Plugin Object</a>
+					  </li>
+					  <li>
+						<a href="jsDocs.html#accounts">Accounts</a>
+					  </li>
+					  <li>
+						<a href="jsDocs.html#calls">Calls</a>
+					  </li>
+					</ul>
+				</div>
+			</div>
+			<div class="offset2 span10">
+				<div class="row">
+					<div class="span10">
+						<h1>Documentation</h1>
+						<p>
+							Blabble was designed to be cross-platform and cross-browser compatible.  
+							It is currently used in a live environment on Windows 7 computers running as part of a 
+							Google Chrome extension.  While FireBreath produces a valid NPAPI plugin and ActiveX control, 
+							Blabble has not been tested under Internet Explorer. Primary testing and development has been 
+							done under Google Chrome on Windows 7.
+						</p>
+						<a name="compiling" class="anchor">&nbsp;</a>
+						<h2>Compiling</h2>
+						<h3>Windows</h3>
+						<p>
+							Visual Studio is used to compile on Windows. Currently, Visual Studio 2012 Professional was 
+							used to compile the binaries. Other versions should work but have not been tested.
+						</p>
+						<h4>PJSIP</h4>
+						<p>
+							A compiled version of PJSIP is included in the git repository under the "external" folder. If you wish
+							to compile and use your own version of PJSIP (to enable TLS or customize other features, see 
+							<a href="http://trac.pjsip.org/repos/wiki/Getting-Started/Windows">here</a>). The compiled version can then
+							be placed into the "external" folder. If you changed the file name be sure to update the library reference in CMakeLists.txt.
+							If you are using a newer version of PJSIP, you will need to update the included header files in "external/pjsip". Currently,
+							Blabble is compiled against SVN revision 4339 of PJSIP.  2.0.1 is not used because of some bugs related to ICE.
+						</p>
+						<h4>FireBreath</h4>
+						<p>
+							FireBreath uses <a href="http://www.cmake.org/cmake/resources/software.html">CMake</a> 
+							and Visual Studio to compile the plugin.  See 
+							<a href="http://www.firebreath.org/display/documentation/Building+on+Windows">here</a>
+							for their instructions.  Binaries are currently compiled with Visual Studio 2012 Professional. To compile, first download
+							FireBreath (currently binaryies are compiled against <a href="https://github.com/firebreath/FireBreath/zipball/firebreath-1.7">
+							version 1.7</a>). Create a folder named <code>projects</code> and checkout the Blabble repository into the folder. Next, run 
+							<code>prep2012.cmd</code> to create the project files in the <code>build</code> directory.  Open the resulting <code>FireBreath.sln</code>
+							solution in Visual Studio and build.  The plugin will be located in <code>./Build/bin/Blabble/[BuildType]/</code> where BuildType will be 
+							something like <code>Debug</code> or <code>Release</code> depending on what you picked.
+						</p>
+						<h3>Linux</h3>
+						<p>
+							Blabble has been tested to compile under Fedora 17, Fedora 18, and Ubuntu 12.10 though any semi-recent distribution should work.
+							The basic requirements are g++ and cmake.  Refer to the <a href="http://www.firebreath.org/display/documentation/Building+on+Linux">
+							FireBreath</a> and <a href="http://trac.pjsip.org/repos/wiki/Getting-Started/Autoconf">PJSIP</a> documentation for their requirements. 
+							Blabble	does not require anything further than what FireBreath and PJSIP require. A static library is provided that should work
+							for most distributions.
+						</p>
+						<h3>Mac OS X</h3>
+						<p>
+							Blabble has been tested to compile under Mountain Lion though previous versions should work too.
+							Xcode, <a href="http://www.cmake.org/cmake/resources/software.html">CMake</a>, and 
+							<a href="http://macpkg.sourceforge.net/">pkg-config</a> are required.  
+							Refer to the <a href="http://www.firebreath.org/display/documentation/Building+on+Linux">
+							FireBreath</a> and <a href="http://trac.pjsip.org/repos/wiki/Getting-Started/Autoconf">PJSIP</a> documentation for their requirements. 
+							Once PJSIP is built, CMake can be used to generate the XCode project for Blabble.  A binary is provided for Mac OS X 10.7 or later.
+						</p>
+						<a name="distributing" class="anchor">&nbsp;</a>
+						<h2>Distributing</h2>
+						<p>
+							There's many ways you can distribute the plugin. It can be embedded in a Google Chrome plugin, Firefox plugin, 
+							or installed and registered as a NPAPI plugin.  An example Google Chrome plugin is available in the downloads section.
+						</p>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
