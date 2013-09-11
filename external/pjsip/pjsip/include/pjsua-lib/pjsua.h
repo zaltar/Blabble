@@ -1,4 +1,4 @@
-/* $Id: pjsua.h 4288 2012-10-26 09:30:37Z bennylp $ */
+/* $Id: pjsua.h 4347 2013-02-13 10:19:25Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -1125,9 +1125,8 @@ typedef struct pjsua_callback
      * INVITE request to the specified target, following the previously
      * received redirection response.
      *
-     * Application may accept the redirection to the specified target 
-     * (the default behavior if this callback is implemented), reject 
-     * this target only and make the session continue to try the next 
+     * Application may accept the redirection to the specified target,
+     * reject this target only and make the session continue to try the next 
      * target in the list if such target exists, stop the whole
      * redirection process altogether and cause the session to be
      * disconnected, or defer the decision to ask for user confirmation.
@@ -1147,9 +1146,12 @@ typedef struct pjsua_callback
      * @return		Action to be performed for the target. Set this
      *			parameter to one of the value below:
      *			- PJSIP_REDIRECT_ACCEPT: immediately accept the
-     *			  redirection (default value). When set, the
-     *			  call will immediately resend INVITE request
-     *			  to the target.
+     *			  redirection. When set, the call will immediately
+     *			  resend INVITE request to the target.
+     *			- PJSIP_REDIRECT_ACCEPT_REPLACE: immediately accept
+     *			  the redirection and replace the To header with the
+     *			  current target. When set, the call will immediately
+     *			  resend INVITE request to the target.
      *			- PJSIP_REDIRECT_REJECT: immediately reject this
      *			  target. The call will continue retrying with
      *			  next target if present, or disconnect the call
@@ -2153,6 +2155,15 @@ typedef struct pjsua_transport_config
     unsigned		port;
 
     /**
+     * Specify the port range for socket binding, relative to the start
+     * port number specified in \a port. Note that this setting is only
+     * applicable when the start port number is non zero.
+     *
+     * Default value is zero.
+     */
+    unsigned		port_range;
+
+    /**
      * Optional address to advertise as the address of this transport.
      * Application can specify any address or hostname for this field,
      * for example it can point to one of the interface address in the
@@ -2655,6 +2666,16 @@ typedef struct pjsua_ice_config
      * Default: no
      */
     pj_bool_t		ice_no_rtcp;
+
+    /**
+     * Send re-INVITE/UPDATE every after ICE connectivity check regardless
+     * the default ICE transport address is changed or not. When this is set
+     * to PJ_FALSE, re-INVITE/UPDATE will be sent only when the default ICE
+     * transport address is changed.
+     *
+     * Default: yes
+     */
+    pj_bool_t		ice_always_update;
 
 } pjsua_ice_config;
 
@@ -5549,6 +5570,16 @@ struct pjsua_media_config
      * Default: no
      */
     pj_bool_t		ice_no_rtcp;
+
+    /**
+     * Send re-INVITE/UPDATE every after ICE connectivity check regardless
+     * the default ICE transport address is changed or not. When this is set
+     * to PJ_FALSE, re-INVITE/UPDATE will be sent only when the default ICE
+     * transport address is changed.
+     *
+     * Default: yes
+     */
+    pj_bool_t		ice_always_update;
 
     /**
      * Enable TURN relay candidate in ICE.

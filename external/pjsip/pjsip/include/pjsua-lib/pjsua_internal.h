@@ -1,4 +1,4 @@
-/* $Id: pjsua_internal.h 4300 2012-11-26 02:04:17Z ming $ */
+/* $Id: pjsua_internal.h 4342 2013-02-06 13:48:45Z nanang $ */
 /* 
  * Copyright (C) 2008-2011 Teluu Inc. (http://www.teluu.com)
  * Copyright (C) 2003-2008 Benny Prijono <benny@prijono.org>
@@ -155,10 +155,7 @@ struct pjsua_call
     char    last_text_buf_[128];    /**< Buffer for last_text.		    */
 
     struct {
-	pj_timer_entry	 reinv_timer;/**< Reinvite retry timer.		    */
-	pj_uint32_t	 sdp_ver;    /**< SDP version of the bad answer     */
 	int		 retry_cnt;  /**< Retry count.			    */
-        pj_bool_t        pending;    /**< Pending until CONFIRMED state     */
     } lock_codec;		     /**< Data for codec locking when answer
 					  contains multiple codecs.	    */
 
@@ -185,6 +182,10 @@ struct pjsua_call
 					    offer.			    */
     unsigned		 rem_vid_cnt;  /**< No of active video in last remote
 					    offer.			    */
+    
+    pj_timer_entry	 reinv_timer;  /**< Reinvite retry timer.	    */
+    pj_bool_t	 	 reinv_pending;/**< Pending until CONFIRMED state.  */
+    pj_bool_t	 	 reinv_ice_sent;/**< Has reinvite for ICE upd sent? */
 };
 
 
@@ -816,6 +817,10 @@ PJ_DECL(void) pjsua_vid_win_reset(pjsua_vid_win_id wid);
 #  define pjsua_vid_win_reset(wid)
 #endif
 
+/*
+ * Schedule check for the need of re-INVITE/UPDATE after media update
+ */
+void pjsua_call_schedule_reinvite_check(pjsua_call *call, unsigned delay_ms);
 
 PJ_END_DECL
 

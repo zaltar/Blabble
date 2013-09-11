@@ -1,7 +1,7 @@
 #define PJSIP_HAS_TLS_TRANSPORT 0
 #define PJ_HAS_SSL_SOCK 0
 #define PJMEDIA_HAS_SRTP 0
-//#define X_FAST
+#define X_FAST
 //#define X_LOAD_TESTING
 
 #ifdef X_FAST

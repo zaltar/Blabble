@@ -32,7 +32,7 @@ SET(PLUGIN_INTERNAL_DEPS
 	netapi32.lib
 	mswsock.lib
 	ws2_32.lib
-	$(MSBuildProjectDirectory)\\..\\..\\..\\projects\\Blabble\\external\\libpjproject-SVN-4339-Release.lib
+	$(MSBuildProjectDirectory)\\..\\..\\..\\projects\\Blabble\\external\\libpjproject-2.1.0-Release.lib
 )
 
 ADD_DEFINITIONS(-DPJ_WIN32=1)
